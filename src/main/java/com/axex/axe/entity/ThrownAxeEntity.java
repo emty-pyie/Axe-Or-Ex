@@ -89,6 +89,11 @@ public class ThrownAxeEntity extends Projectile {
         if (isStuck()) {
             setDeltaMovement(Vec3.ZERO);
             if (stuckPos != null) {
+                setPos(
+                        stuckPos.getX() + STUCK_OFFSET,
+                        stuckPos.getY() + STUCK_OFFSET,
+                        stuckPos.getZ() + STUCK_OFFSET
+                );
                 setPos(stuckPos.getX() + STUCK_OFFSET, stuckPos.getY() + STUCK_OFFSET, stuckPos.getZ() + STUCK_OFFSET);
             }
         }
@@ -98,6 +103,16 @@ public class ThrownAxeEntity extends Projectile {
         }
     }
 
+
+    @Override
+    protected boolean canHitEntity(Entity entity) {
+        if (isStuck()) {
+            return false;
+        }
+
+        Entity owner = getOwner();
+        return super.canHitEntity(entity) && entity != owner;
+    }
 
     @Override
     protected boolean canHitEntity(Entity entity) {
@@ -128,6 +143,7 @@ public class ThrownAxeEntity extends Projectile {
     protected void onHitBlock(BlockHitResult result) {
         BlockState state = level().getBlockState(result.getBlockPos());
 
+        if (isWoodLike(state)) {
         if (state.is(BlockTags.LOGS)
                 || state.is(BlockTags.PLANKS)
                 || state.is(BlockTags.WOODEN_DOORS)
@@ -146,6 +162,15 @@ public class ThrownAxeEntity extends Projectile {
                 );
             }
         }
+    }
+
+    private static boolean isWoodLike(BlockState state) {
+        return state.is(BlockTags.LOGS)
+                || state.is(BlockTags.PLANKS)
+                || state.is(BlockTags.WOODEN_DOORS)
+                || state.is(BlockTags.WOODEN_FENCES)
+                || state.is(BlockTags.WOODEN_SLABS)
+                || state.is(BlockTags.WOODEN_STAIRS);
 
         return scaled + (sharpness * 1.25F);
     }
