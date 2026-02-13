@@ -134,8 +134,10 @@ public class ThrownAxeEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected float getGravity() {
-        return this.isStuck() ? 0.0F : 0.05F;
+protected double getGravity() {
+    return this.isStuck() ? 0.0D : 0.05D;
+}
+
     }
 
     @Override
@@ -155,7 +157,7 @@ public class ThrownAxeEntity extends ThrowableProjectile {
 
     public static float computeDamage(LivingEntity thrower, ItemStack axeStack, float chargeScale) {
         float base = (float) thrower.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
-        int sharpness = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.SHARPNESS, axeStack);
+        int sharpness = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS, axeStack);
         float enchantBonus = sharpness > 0 ? 0.5F * sharpness + 0.5F : 0.0F;
         return (base + enchantBonus) * (0.7F + 0.8F * chargeScale);
     }
