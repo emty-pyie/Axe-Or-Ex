@@ -51,7 +51,8 @@ public final class ClientEvents {
             }
 
             if (charging) {
-                ModNetwork.CHANNEL.sendToServer(new ThrowAxePacket(chargeTicks));
+                ModNetwork.CHANNEL.send(new ThrowAxePacket(chargeTicks), PacketDistributor.SERVER.noArg());
+
             }
             reset();
         }
