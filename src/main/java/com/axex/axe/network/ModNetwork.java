@@ -3,24 +3,23 @@ package com.axex.axe.network;
 import com.axex.axe.AxeMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.ChannelBuilder;
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.SimpleChannel;
 
 public class ModNetwork {
 
-    private static final String PROTOCOL_VERSION = "1";
+    private static final int PROTOCOL_VERSION = 1;
 
     public static final SimpleChannel CHANNEL = ChannelBuilder
             .named(ResourceLocation.fromNamespaceAndPath(AxeMod.MODID, "main"))
             .networkProtocolVersion(PROTOCOL_VERSION)
-            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+            .clientAcceptedVersions((status, version) -> true)
+            .serverAcceptedVersions((status, version) -> true)
             .simpleChannel();
 
     public static void register() {
         int id = 0;
 
-        CHANNEL.messageBuilder(ThrowAxePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+        CHANNEL.messageBuilder(ThrowAxePacket.class, id++)
                 .encoder(ThrowAxePacket::encode)
                 .decoder(ThrowAxePacket::decode)
                 .consumerMainThread(ThrowAxePacket::handle)
