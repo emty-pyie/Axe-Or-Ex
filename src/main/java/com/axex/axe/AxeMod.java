@@ -1,26 +1,24 @@
 package com.axex.axe;
-public static final String MODID = "axe_or_ex";
 
 import com.axex.axe.network.ModNetwork;
 import com.axex.axe.registry.ModEntities;
-import com.axex.axe.registry.ModEvents;
 import com.axex.axe.registry.ModItems;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(AxeMod.MOD_ID)
+@Mod(AxeMod.MODID)
 public class AxeMod {
-    public static final String MOD_ID = "axe";
+
+    public static final String MODID = "axe_or_ex"; // ← use your real mod id
 
     public AxeMod() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModItems.ITEMS.register(modBus);
-        ModEntities.ENTITIES.register(modBus);
-        ModEvents.register(modBus);
-        ModNetwork.register();
 
-        MinecraftForge.EVENT_BUS.register(this);
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        ModItems.register(modBus);
+        ModEntities.register(modBus);
+
+        ModNetwork.register();
     }
 }
