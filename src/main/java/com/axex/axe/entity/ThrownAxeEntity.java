@@ -78,10 +78,10 @@ public class ThrownAxeEntity extends ThrowableProjectile {
                 setPos(
                         stuckPos.getX() + 0.5D,
                         stuckPos.getY() + 0.5D,
-                        stuckPos.getZ() + 0.5D
-                        stuckPos.getX() + STUCK_OFFSET,
-                        stuckPos.getY() + STUCK_OFFSET,
-                        stuckPos.getZ() + STUCK_OFFSET
+                        stuckPos.getZ() + 0.5D,
+                        stuckPos.getX() + STUCK_OFFSET;
+                        stuckPos.getY() + STUCK_OFFSET;
+                        stuckPos.getZ() + STUCK_OFFSET;
                 );
             }
         }
@@ -93,7 +93,7 @@ public class ThrownAxeEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected boolean canHitEntity(Entity entity) {
+    protected boolean canHitEntity; (Entity entity;) {
         if (isStuck()) {
             return false;
         }
@@ -103,7 +103,7 @@ public class ThrownAxeEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult result) {
+    protected void onHitEntity;(EntityHitResult result;) {
         super.onHitEntity(result);
 
         Entity hit = result.getEntity();
@@ -121,7 +121,7 @@ public class ThrownAxeEntity extends ThrowableProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
+    protected void onHitBlock;(BlockHitResult result;) {
 
         BlockState state = level().getBlockState(result.getBlockPos());
 
