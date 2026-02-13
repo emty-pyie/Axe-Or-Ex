@@ -42,4 +42,31 @@ public record ThrowAxePacket(int chargeTicks) {
                 return;
             }
 
-            ThrownAxeEntity thrownAxe = new Thrown
+            ThrownAxeEntity thrownAxe = new ThrownAxeEntity(
+                    player.level(),
+                    player,
+                    held,
+                    ThrownAxeEntity.computeDamage(player, held, chargeScale)
+            );
+
+            float velocity = 1.6F + (chargeScale * 1.4F);
+            thrownAxe.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, velocity, 1.0F);
+
+            player.level().addFreshEntity(thrownAxe);
+
+            player.level().playSound(
+                    null,
+                    player.blockPosition(),
+                    SoundEvents.TRIDENT_THROW.value(),
+                    SoundSource.PLAYERS,
+                    1.0F,
+                    0.95F + player.getRandom().nextFloat() * 0.1F
+            );
+
+            held.shrink(1);
+            player.getCooldowns().addCooldown(held.getItem(), 15);
+        });
+
+        context.setPacketHandled(true);
+    }
+}
