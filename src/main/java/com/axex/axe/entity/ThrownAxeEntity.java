@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,8 +26,12 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class ThrownAxeEntity extends ThrowableProjectile {
-    private static final EntityDataAccessor<ItemStack> AXE_STACK = SynchedEntityData.defineId(ThrownAxeEntity.class, EntityDataSerializers.ITEM_STACK);
-    private static final EntityDataAccessor<Boolean> STUCK = SynchedEntityData.defineId(ThrownAxeEntity.class, EntityDataSerializers.BOOLEAN);
+
+    private static final EntityDataAccessor<ItemStack> AXE_STACK =
+            SynchedEntityData.defineId(ThrownAxeEntity.class, EntityDataSerializers.ITEM_STACK);
+
+    private static final EntityDataAccessor<Boolean> STUCK =
+            SynchedEntityData.defineId(ThrownAxeEntity.class, EntityDataSerializers.BOOLEAN);
 
     private float baseDamage;
     private BlockPos stuckPos;
@@ -54,68 +57,91 @@ public class ThrownAxeEntity extends ThrowableProjectile {
     @Override
     public void tick() {
         super.tick();
+
         if (isStuck()) {
             setDeltaMovement(Vec3.ZERO);
             if (stuckPos != null) {
-                this.setPos(stuckPos.getX() + 0.5D, stuckPos.getY() + 0.5D, stuckPos.getZ() + 0.5D);
+                setPos(
+                        stuckPos.getX() + 0.5D,
+                        stuckPos.getY() + 0.5D,
+                        stuckPos.getZ() + 0.5D
+                );
             }
         }
-        if (!this.level().isClientSide && this.tickCount > 20 * 45) {
-            this.discard();
+
+        if (!level().isClientSide && tickCount > 20 * 45) {
+            discard();
         }
     }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
+
         Entity hit = result.getEntity();
-        Entity owner = this.getOwner();
+        Entity owner = getOwner();
 
-        DamageSource source = this.damageSources().trident(this, owner == null ? this : owner);
-        hit.hurt(source, this.baseDamage);
+        DamageSource source =
+                damageSources().trident(this, owner == null ? this : owner);
 
-        if (!this.level().isClientSide) {
-            this.discard();
+        hit.hurt(source, baseDamage);
+
+        if (!level().isClientSide) {
+            discard();
         }
     }
 
     @Override
     protected void onHitBlock(BlockHitResult result) {
-        BlockState state = this.level().getBlockState(result.getBlockPos());
-        if (state.is(BlockTags.createOptional(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("axe", "axe_stickable")))
-                || state.is(BlockTags.LOGS)
+
+        BlockState state = level().getBlockState(result.getBlockPos());
+
+        if (state.is(BlockTags.LOGS)
                 || state.is(BlockTags.PLANKS)
-                || state.is(BlockTags.WOODEN_STAIRS)
-                || state.is(BlockTags.WOODEN_SLABS)
+                || state.is(BlockTags.WOODEN_DOORS)
                 || state.is(BlockTags.WOODEN_FENCES)
-                || state.is(BlockTags.WOODEN_DOORS)) {
+                || state.is(BlockTags.WOODEN_SLABS)
+                || state.is(BlockTags.WOODEN_STAIRS)) {
+
             stickInBlock(result.getBlockPos(), result.getDirection());
             return;
         }
 
-        if (!this.level().isClientSide) {
-            this.spawnAtLocation(getAxeStack());
-            this.discard();
+        if (!level().isClientSide) {
+            spawnAtLocation(getAxeStack());
+            discard();
         }
     }
 
     private void stickInBlock(BlockPos pos, Direction face) {
-        if (!this.level().isClientSide) {
-            this.setStuck(true);
-            this.stuckPos = pos.relative(face);
-            this.setNoGravity(true);
-            this.setDeltaMovement(Vec3.ZERO);
-            this.hasImpulse = false;
+
+        if (!level().isClientSide) {
+
+            setStuck(true);
+
+            stuckPos = pos.relative(face);
+
+            setNoGravity(true);
+
+            setDeltaMovement(Vec3.ZERO);
+
+            hasImpulse = false;
         }
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
+
         super.addAdditionalSaveData(tag);
-        tag.put("Axe", getAxeStack().save(this.registryAccess()));
-        tag.putFloat("BaseDamage", this.baseDamage);
+
+        tag.put("Axe", getAxeStack().save(registryAccess()));
+
+        tag.putFloat("BaseDamage", baseDamage);
+
         tag.putBoolean("Stuck", isStuck());
+
         if (stuckPos != null) {
+
             tag.putInt("StuckX", stuckPos.getX());
             tag.putInt("StuckY", stuckPos.getY());
             tag.putInt("StuckZ", stuckPos.getZ());
@@ -124,20 +150,31 @@ public class ThrownAxeEntity extends ThrowableProjectile {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
+
         super.readAdditionalSaveData(tag);
-        this.setAxeStack(ItemStack.parse(this.registryAccess(), tag.getCompound("Axe")).orElse(ItemStack.EMPTY));
-        this.baseDamage = tag.getFloat("BaseDamage");
-        this.setStuck(tag.getBoolean("Stuck"));
-        if (tag.contains("StuckX") && tag.contains("StuckY") && tag.contains("StuckZ")) {
-            this.stuckPos = new BlockPos(tag.getInt("StuckX"), tag.getInt("StuckY"), tag.getInt("StuckZ"));
+
+        setAxeStack(
+                ItemStack.parse(registryAccess(), tag.getCompound("Axe"))
+                        .orElse(ItemStack.EMPTY)
+        );
+
+        baseDamage = tag.getFloat("BaseDamage");
+
+        setStuck(tag.getBoolean("Stuck"));
+
+        if (tag.contains("StuckX")) {
+
+            stuckPos = new BlockPos(
+                    tag.getInt("StuckX"),
+                    tag.getInt("StuckY"),
+                    tag.getInt("StuckZ")
+            );
         }
     }
 
     @Override
-protected double getGravity() {
-    return this.isStuck() ? 0.0D : 0.05D;
-}
-
+    protected double getGravity() {
+        return isStuck() ? 0.0D : 0.05D;
     }
 
     @Override
@@ -147,34 +184,59 @@ protected double getGravity() {
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if (!this.level().isClientSide && this.isStuck() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
-            player.setItemInHand(InteractionHand.MAIN_HAND, getAxeStack().copy());
-            this.discard();
-            return InteractionResult.CONSUME;
+
+        if (!level().isClientSide
+                && isStuck()
+                && hand == InteractionHand.MAIN_HAND
+                && player.getMainHandItem().isEmpty()) {
+
+            player.setItemInHand(hand, getAxeStack().copy());
+
+            discard();
+
+            return InteractionResult.SUCCESS;
         }
+
         return super.interact(player, hand);
     }
 
-    public static float computeDamage(LivingEntity thrower, ItemStack axeStack, float chargeScale) {
-        float base = (float) thrower.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
-        int sharpness = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS, axeStack);
-        float enchantBonus = sharpness > 0 ? 0.5F * sharpness + 0.5F : 0.0F;
-        return (base + enchantBonus) * (0.7F + 0.8F * chargeScale);
+    public static float computeDamage(
+            LivingEntity thrower,
+            ItemStack axeStack,
+            float chargeScale
+    ) {
+
+        float base =
+                (float) thrower.getAttributeValue(
+                        net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE
+                );
+
+        int sharpness =
+                EnchantmentHelper.getItemEnchantmentLevel(
+                        Enchantments.SHARPNESS,
+                        axeStack
+                );
+
+        float enchantBonus =
+                sharpness > 0 ? 0.5F * sharpness + 0.5F : 0.0F;
+
+        return (base + enchantBonus)
+                * (0.7F + 0.8F * chargeScale);
     }
 
     public ItemStack getAxeStack() {
-        return this.entityData.get(AXE_STACK);
+        return entityData.get(AXE_STACK);
     }
 
     public void setAxeStack(ItemStack stack) {
-        this.entityData.set(AXE_STACK, stack);
+        entityData.set(AXE_STACK, stack);
     }
 
     public boolean isStuck() {
-        return this.entityData.get(STUCK);
+        return entityData.get(STUCK);
     }
 
     public void setStuck(boolean stuck) {
-        this.entityData.set(STUCK, stuck);
+        entityData.set(STUCK, stuck);
     }
 }
