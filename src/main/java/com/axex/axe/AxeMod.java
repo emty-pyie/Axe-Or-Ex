@@ -1,4 +1,5 @@
 package com.axex.axe;
+public static final String MODID = "axe_or_ex";
 
 import com.axex.axe.network.ModNetwork;
 import com.axex.axe.registry.ModEntities;
