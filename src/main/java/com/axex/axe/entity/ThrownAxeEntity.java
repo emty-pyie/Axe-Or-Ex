@@ -171,25 +171,9 @@ public class ThrownAxeEntity extends ThrowableProjectile {
         }
     }
 
-    // ✔ Correct for 1.21.1
     @Override
     protected Item getDefaultItem() {
         return getAxeStack().getItem();
-    }
-
-    @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
-        if (!level().isClientSide
-                && isStuck()
-                && hand == InteractionHand.MAIN_HAND
-                && player.getMainHandItem().isEmpty()) {
-
-            player.setItemInHand(hand, getAxeStack().copy());
-            discard();
-            return InteractionResult.SUCCESS;
-        }
-
-        return super.interact(player, hand);
     }
 
     public static float computeDamage(LivingEntity thrower, ItemStack axeStack, float chargeScale) {
