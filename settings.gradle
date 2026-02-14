@@ -1,1 +1,22 @@
-rootProject.name = 'axe_or_ex'
+rootProject.name = 'axe-or-ex'
+
+pluginManagement {
+    repositories {
+        // Forge Gradle plugin (requires this repo)
+        maven { url = uri('https://maven.minecraftforge.net') }
+
+        // Gradle Plugin Portal and Maven Central fallback
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        // Required for Forge artifacts
+        maven { url = uri('https://maven.minecraftforge.net') }
+    }
+}
