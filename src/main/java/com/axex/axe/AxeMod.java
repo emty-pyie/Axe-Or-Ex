@@ -1,6 +1,5 @@
 package com.axex.axe;
 
-import com.axex.axe.network.ModNetwork;
 import com.axex.axe.registry.ModEntities;
 import com.axex.axe.registry.ModItems;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,8 +17,6 @@ public class AxeMod {
 
         ModItems.ITEMS.register(modBus);
         ModEntities.ENTITIES.register(modBus);
-
-        ModNetwork.register();
 
         MinecraftForge.EVENT_BUS.register(this);
     }
