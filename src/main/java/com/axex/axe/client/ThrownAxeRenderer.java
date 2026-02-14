@@ -47,13 +47,13 @@ public class ThrownAxeRenderer extends EntityRenderer<ThrownAxeEntity> {
                 false,
                 poseStack,
                 bufferSource,
+                entity.level(),
                 packedLight,
                 OverlayTexture.NO_OVERLAY,
                 entity.getId()
         );
 
         poseStack.popPose();
-
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
