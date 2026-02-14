@@ -27,4 +27,4 @@ Built JAR should appear under `build/libs`.
 
 
 ## Release
-- See `RELEASE.md` for how to build the `.jar` and publish GitHub releases (automatic and manual methods).
+- See `RELEASE.md` for how to build the `.jar`
