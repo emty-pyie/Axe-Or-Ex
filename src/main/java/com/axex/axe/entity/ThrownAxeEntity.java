@@ -171,7 +171,7 @@ public class ThrownAxeEntity extends ThrowableProjectile {
         }
     }
 
-    @Override
+    
     protected Item getDefaultItem() {
         return getAxeStack().getItem();
     }
