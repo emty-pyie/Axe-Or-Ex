@@ -15,7 +15,7 @@ public final class ModNetwork {
 
     public static void register() {
         CHANNEL = ChannelBuilder
-                .named(ResourceLocation.fromNamespaceAndPath(AxeMod.MODID, "main"))
+                .named(ResourceLocation.tryBuild(AxeMod.MODID, "main"))
                 .networkProtocolVersion(PROTOCOL_VERSION)
                 .clientAcceptedVersions((status, version) -> true)
                 .serverAcceptedVersions((status, version) -> true)
