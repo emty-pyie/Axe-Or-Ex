@@ -180,8 +180,9 @@ protected double getDefaultGravity() {
     
 
     @Override
-    protected ItemStack getDefaultItem() {
-        return getAxeStack();
+    return getAxeStack().getItem();
+ {
+        rreturn getAxeStack().getItem();
     }
 
     @Override
